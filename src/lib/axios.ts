@@ -38,7 +38,7 @@ export interface ApiError {
  */
 function createAxiosInstance(): AxiosInstance {
     const instance = axios.create({
-        baseURL: env.BE_URL,
+        baseURL: env.NEXT_PUBLIC_BE_URL,
         timeout: 30000, // 30 seconds
         headers: {
             'Content-Type': 'application/json',

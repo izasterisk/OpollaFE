@@ -11,7 +11,7 @@ export const authService = {
     login: async (username: string, password: string): Promise<ProfileResponse> => {
         const request: LoginRequest = { username, password };
         const response = await httpPost<APIResponse<ProfileResponse>>(
-            `${env.BE_URL}/api/Login`,
+            `${env.NEXT_PUBLIC_BE_URL}/api/Login`,
             request
         );
         return response.data;
@@ -23,7 +23,7 @@ export const authService = {
      */
     logout: async (username: string): Promise<void> => {
         await httpPost<APIResponse<{ message: string }>>(
-            `${env.BE_URL}/api/Login/logout`,
+            `${env.NEXT_PUBLIC_BE_URL}/api/Login/logout`,
             { username }
         );
     },

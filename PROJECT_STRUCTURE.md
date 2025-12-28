@@ -594,6 +594,134 @@ if (isDevelopment) {
 
 ---
 
+## 🔐 Authentication & Protected Routes
+
+### Authentication Pattern
+
+This project uses localStorage-based authentication with UTC timestamp session management.
+
+**Key Files:**
+- `src/hooks/useAuth.ts` - Authentication hook
+- `src/utils/auth.utils.ts` - localStorage utilities
+- `src/services/auth.service.ts` - API calls
+
+**Pattern:**
+```typescript
+// 1. Login flow
+const { login } = useAuth();
+await login(password); // Saves token + expireTime (UTC)
+
+// 2. Session check (only on route navigation)
+const { checkSession } = useAuth();
+if (!checkSession()) {
+  router.push('/login');
+}
+
+// 3. Logout
+const { logout } = useAuth();
+await logout(); // Clears localStorage + API call
+```
+
+**SSR Safety:**
+```typescript
+// ✅ ALWAYS check window existence
+const authData = typeof window !== 'undefined' ? getAuthData() : null;
+
+// ✅ In utility functions
+export function getAuthData(): AuthState | null {
+  if (typeof window === 'undefined') return null;
+  // ... localStorage access
+}
+```
+
+---
+
+### Protected Routes
+
+**Pattern for protected pages:**
+```typescript
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
+
+export default function ProtectedPage() {
+  const router = useRouter();
+  const { checkSession, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (!checkSession() || !isAuthenticated) {
+      router.push('/login');
+    }
+  }, [checkSession, isAuthenticated, router]);
+
+  return <div>Protected Content</div>;
+}
+```
+
+**Home page redirect pattern:**
+```typescript
+// Redirect based on auth state
+useEffect(() => {
+  const authData = getAuthData();
+  if (authData && !isSessionExpired()) {
+    router.push('/dashboard');
+  } else {
+    router.push('/login');
+  }
+}, [router]);
+```
+
+---
+
+### LocalStorage Keys
+
+**Standard keys used:**
+- `authToken` - JWT token from backend
+- `userName` - Display name (from staff.name or email)
+- `expireTime` - UTC timestamp (ISO string)
+
+**Example:**
+```typescript
+localStorage.setItem('authToken', 'eyJ...');
+localStorage.setItem('userName', 'Nguyễn Thị Minh Ánh');
+localStorage.setItem('expireTime', '2025-12-29T23:00:00.000Z');
+```
+
+---
+
+### Session Expiry
+
+**Current implementation: 23 hours from login**
+
+```typescript
+// Calculate expiry (UTC)
+const expireTime = new Date(Date.now() + 23 * 60 * 60 * 1000);
+localStorage.setItem('expireTime', expireTime.toISOString());
+
+// Check expiry
+const isExpired = new Date() > new Date(expireTime);
+```
+
+**When to check:**
+- ✅ On navigation to protected routes (useEffect)
+- ❌ NOT on every render (performance)
+- ❌ NOT with intervals (unless needed)
+
+---
+
+### Environment Variables for Auth
+
+```env
+# Backend API URL
+NEXT_PUBLIC_BE_URL=https://localhost:7177
+```
+
+**Note:** Use `NEXT_PUBLIC_` prefix for client-side access!
+
+---
+
 ## 🧪 Testing Guidelines (Future)
 
 When adding tests:

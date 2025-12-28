@@ -18,11 +18,11 @@ import { z } from 'zod';
 const envSchema = z.object({
     /**
      * Backend API URL (OpollaBE).
-     * Example: https://localhost:5001
+     * Example: https://localhost:7177
      */
-    BE_URL: z
-        .string({ message: 'BE_URL is required. Please check your .env file.' })
-        .url({ message: 'BE_URL must be a valid URL' }),
+    NEXT_PUBLIC_BE_URL: z
+        .string({ message: 'NEXT_PUBLIC_BE_URL is required. Please check your .env file.' })
+        .url({ message: 'NEXT_PUBLIC_BE_URL must be a valid URL' }),
 
     /**
      * Current Node environment.
@@ -43,7 +43,7 @@ export type Env = z.infer<typeof envSchema>;
  */
 function validateEnv(): Env {
     const parsed = envSchema.safeParse({
-        BE_URL: process.env['BE_URL'],
+        NEXT_PUBLIC_BE_URL: process.env['NEXT_PUBLIC_BE_URL'],
         NODE_ENV: process.env['NODE_ENV'],
     });
 
