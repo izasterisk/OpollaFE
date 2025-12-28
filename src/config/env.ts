@@ -17,12 +17,12 @@ import { z } from 'zod';
  */
 const envSchema = z.object({
     /**
-     * Base URL for the .NET Backend API.
+     * Backend API URL (OpollaBE).
      * Example: https://localhost:5001
      */
-    NEXT_PUBLIC_API_BASE_URL: z
-        .string({ message: 'NEXT_PUBLIC_API_BASE_URL is required. Please check your .env file.' })
-        .url({ message: 'NEXT_PUBLIC_API_BASE_URL must be a valid URL' }),
+    BE_URL: z
+        .string({ message: 'BE_URL is required. Please check your .env file.' })
+        .url({ message: 'BE_URL must be a valid URL' }),
 
     /**
      * Current Node environment.
@@ -43,7 +43,7 @@ export type Env = z.infer<typeof envSchema>;
  */
 function validateEnv(): Env {
     const parsed = envSchema.safeParse({
-        NEXT_PUBLIC_API_BASE_URL: process.env['NEXT_PUBLIC_API_BASE_URL'],
+        BE_URL: process.env['BE_URL'],
         NODE_ENV: process.env['NODE_ENV'],
     });
 

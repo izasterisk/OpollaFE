@@ -89,3 +89,13 @@ export interface SuccessResponse<T = unknown> {
  * Union type for API responses.
  */
 export type ApiResult<T> = SuccessResponse<T> | ErrorResponse;
+
+/**
+ * Backend API response format (matches .NET API).
+ */
+export interface APIResponse<T> {
+    status: boolean;
+    statusCode: number;
+    data: T;
+    errors: string[];
+}

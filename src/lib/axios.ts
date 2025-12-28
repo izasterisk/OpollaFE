@@ -38,7 +38,7 @@ export interface ApiError {
  */
 function createAxiosInstance(): AxiosInstance {
     const instance = axios.create({
-        baseURL: env.NEXT_PUBLIC_API_BASE_URL,
+        baseURL: env.BE_URL,
         timeout: 30000, // 30 seconds
         headers: {
             'Content-Type': 'application/json',
@@ -119,12 +119,10 @@ function createAxiosInstance(): AxiosInstance {
  * TODO: Implement based on your auth system (localStorage, cookies, etc.)
  */
 function getAuthToken(): string | null {
-    // Placeholder - implement based on your authentication system
-    // Example: return localStorage.getItem('accessToken');
     if (typeof window === 'undefined') {
         return null;
     }
-    return localStorage.getItem('accessToken');
+    return localStorage.getItem('authToken');
 }
 
 /**
