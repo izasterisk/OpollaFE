@@ -21,7 +21,23 @@
  * This file serves as a placeholder and barrel export.
  */
 
-// Export components as you create them:
-// export { Button } from './ui/Button';
-// export { Input } from './ui/Input';
-// export { Card } from './ui/Card';
+
+// Shared
+export * from './shared/Card';
+export * from './shared/Spinner';
+export * from './shared/ErrorToast';
+export * from './shared/Pagination';
+export * from './shared/TabSwitch';
+
+// Auth
+export * from './auth/LoginForm';
+
+// Layout
+export * from './layout/Header';
+
+// Class
+export * from './class/ClassCard';
+
+// Student
+export * from './student/StudentCard';
+export * from './student/HomeLearningCard';
