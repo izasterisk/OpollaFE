@@ -11,91 +11,72 @@ export function HomeLearningCard({ data }: HomeLearningCardProps) {
     const displayName = data.studentName;
 
     return (
-        <Card>
-            <div className="flex items-start gap-4">
+        <Card className="py-3">
+            <div className="flex items-center gap-4">
                 {/* Avatar */}
                 {avatarUrl ? (
                     <img
                         src={avatarUrl}
                         alt={displayName}
-                        className="w-14 h-14 rounded-full object-cover border-2 border-gray-200 flex-shrink-0"
+                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 flex-shrink-0"
                     />
                 ) : (
-                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold flex-shrink-0">
                         {displayName.charAt(0).toUpperCase()}
                     </div>
                 )}
 
-                {/* Info */}
-                <div className="flex-1 min-w-0 space-y-3">
-                    <h3 className="text-lg font-semibold text-gray-900 truncate">
+                {/* Name */}
+                <div className="flex-1 min-w-0">
+                    <h3 className="text-base font-semibold text-gray-900 truncate">
                         {displayName}
                     </h3>
+                </div>
 
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                        {/* Skill */}
-                        <div>
-                            <span className="text-gray-600">Skill:</span>
-                            <p className="font-medium text-gray-900 capitalize">
-                                {data.skill.toLowerCase().replace('_', ' ')}
-                            </p>
-                        </div>
+                {/* Metrics - Horizontal */}
+                <div className="flex items-center gap-6 text-sm">
+                    {/* Completion */}
+                    <div className="text-center">
+                        <span className="text-gray-600 text-xs block">Completion</span>
+                        <p className={`font-semibold ${data.appCompletion === 100 ? 'text-green-600' :
+                                data.appCompletion !== null ? 'text-yellow-600' :
+                                    'text-gray-400'
+                            }`}>
+                            {formatPercentage(data.appCompletion)}
+                        </p>
+                    </div>
 
-                        {/* Unit */}
-                        {data.unitName && (
-                            <div>
-                                <span className="text-gray-600">Unit:</span>
-                                <p className="font-medium text-gray-900">{data.unitName}</p>
+                    {/* Score */}
+                    <div className="text-center">
+                        <span className="text-gray-600 text-xs block">Score</span>
+                        <p className={`font-semibold ${data.appScore !== null && data.appScore >= 75 ? 'text-green-600' :
+                                data.appScore !== null ? 'text-yellow-600' :
+                                    'text-gray-400'
+                            }`}>
+                            {formatPercentage(data.appScore)}
+                        </p>
+                    </div>
+
+                    {/* Time Spent */}
+                    <div className="text-center min-w-[80px]">
+                        <span className="text-gray-600 text-xs block">Time Spent</span>
+                        <p className="font-medium text-gray-900">
+                            {formatSeconds(data.appTime)}
+                        </p>
+                    </div>
+
+                    {/* Completed Badge */}
+                    <div className="flex-shrink-0">
+                        {data.completedAt ? (
+                            <div className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                ✓ Completed
                             </div>
-                        )}
-
-                        {/* Completion */}
-                        <div>
-                            <span className="text-gray-600">Completion:</span>
-                            <p className={`font-semibold ${data.appCompletion === 100 ? 'text-green-600' :
-                                    data.appCompletion !== null ? 'text-yellow-600' :
-                                        'text-gray-400'
-                                }`}>
-                                {formatPercentage(data.appCompletion)}
-                            </p>
-                        </div>
-
-                        {/* Score */}
-                        <div>
-                            <span className="text-gray-600">Score:</span>
-                            <p className={`font-semibold ${data.appScore !== null && data.appScore >= 75 ? 'text-green-600' :
-                                    data.appScore !== null ? 'text-yellow-600' :
-                                        'text-gray-400'
-                                }`}>
-                                {formatPercentage(data.appScore)}
-                            </p>
-                        </div>
-
-                        {/* Time */}
-                        <div>
-                            <span className="text-gray-600">Time Spent:</span>
-                            <p className="font-medium text-gray-900">
-                                {formatSeconds(data.appTime)}
-                            </p>
-                        </div>
-
-                        {/* Last Accessed */}
-                        {data.lastAccessedAt && (
-                            <div>
-                                <span className="text-gray-600">Last Access:</span>
-                                <p className="text-xs text-gray-700">
-                                    {new Date(data.lastAccessedAt).toLocaleString()}
-                                </p>
+                        ) : (
+                            <div className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                                Incomplete
                             </div>
                         )}
                     </div>
-
-                    {/* Completed badge */}
-                    {data.completedAt && (
-                        <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            ✓ Completed
-                        </div>
-                    )}
                 </div>
             </div>
         </Card>

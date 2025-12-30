@@ -80,7 +80,7 @@ export default function ClassStudentsPage() {
         fetchStudents();
     }, [activeTab, page, classId, router]); // Remove checkSession and isAuthenticated
 
-    // Fetch home learning progress
+    // Fetch home learning progress - fetch ALL data then paginate client-side
     useEffect(() => {
         if (activeTab !== 'learning') return;
 
@@ -98,15 +98,34 @@ export default function ClassStudentsPage() {
                     return;
                 }
 
-                const response = await studentService.getHomeLearningProgress(
+                // Fetch ALL data (service now returns all records)
+                const allData = await studentService.getHomeLearningProgress(
                     token,
                     classId,
-                    selectedDate,
-                    page,
-                    pageSize
+                    selectedDate
                 );
-                setHomeLearning(response.data);
-                setTotalPages(response.totalPages);
+
+                // Sort: null completion/score first, then others
+                const sorted = [...allData].sort((a, b) => {
+                    const aIsNull = a.appCompletion === null || a.appScore === null;
+                    const bIsNull = b.appCompletion === null || b.appScore === null;
+
+                    if (aIsNull && !bIsNull) return -1; // a goes first
+                    if (!aIsNull && bIsNull) return 1;  // b goes first
+                    return 0; // maintain order
+                });
+
+                // Calculate pagination
+                const total = sorted.length;
+                const totalPagesCalc = Math.ceil(total / pageSize);
+                setTotalPages(totalPagesCalc);
+
+                // Apply client-side pagination
+                const startIndex = (page - 1) * pageSize;
+                const endIndex = startIndex + pageSize;
+                const paginatedData = sorted.slice(startIndex, endIndex);
+
+                setHomeLearning(paginatedData);
             } catch (err) {
                 const errorMessage = err instanceof Error
                     ? err.message
@@ -118,7 +137,7 @@ export default function ClassStudentsPage() {
         };
 
         fetchHomeLearning();
-    }, [activeTab, page, selectedDate, classId, router]); // Remove checkSession and isAuthenticated
+    }, [activeTab, page, selectedDate, classId, router, pageSize]); // Add pageSize to deps
 
     const handleTabChange = (tab: Tab) => {
         setActiveTab(tab);
